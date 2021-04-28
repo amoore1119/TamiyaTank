@@ -13,3 +13,4 @@
 
 ### Development enviroment
 - IAR ARM 8.32.4
+- xdk-asf-3.49.1
