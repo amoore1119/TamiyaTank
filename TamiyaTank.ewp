@@ -1198,13 +1198,34 @@
     <group>
         <name>header</name>
         <file>
+            <name>$PROJ_DIR$\src\headers\Gsensor.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\src\headers\Motor.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\src\headers\Servo.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\src\headers\TamiyaTank.h</name>
         </file>
     </group>
     <group>
         <name>src</name>
+        <group>
+            <name>Init</name>
+            <file>
+                <name>$PROJ_DIR$\src\Initialize.c</name>
+            </file>
+        </group>
         <file>
             <name>$PROJ_DIR$\src\Main.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\src\SystemHandler.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\src\Tick.c</name>
         </file>
     </group>
 </project>
