@@ -1,2 +1,301 @@
-#include <TamiyaTank.h>
+#include <samc21.h>
+#include <Initialize.h>
 
+void initClock () {
+	//enable external crystal
+	OSCCTRL->XOSCCTRL.bit.XTALEN = 1; // enable XIN/XOUT pin
+	OSCCTRL->XOSCCTRL.bit.GAIN = 2; // for 8MHz
+	OSCCTRL->XOSCCTRL.bit.AMPGC = 1;
+	OSCCTRL->XOSCCTRL.bit.ENABLE = 1;
+	while (!OSCCTRL->STATUS.bit.XOSCRDY);
+
+	//OSCCTRL->XOSCCTRL.bit.CFDEN = 1; // clock failure detector
+	//OSCCTRL->CFDPRESC.bit.CFDPRESC = 1;
+
+	//system clock source
+	GCLK->GENCTRL[0].bit.SRC = 0; //XOSC
+	GCLK->GENCTRL[0].bit.IDC = 1;
+
+	//enable GCLK 2 for TC1
+	GCLK->GENCTRL[2].bit.GENEN = 1;
+	GCLK->GENCTRL[2].bit.SRC = 0x0; //XOSC = 8MHZ
+	while (GCLK->SYNCBUSY.bit.GENCTRL & 0x02);
+	
+	GCLK->GENCTRL[2].bit.DIV = 10; // GCLK1 = 8MHZ / 110 = 720kHz
+	GCLK->GENCTRL[2].bit.DIVSEL = 0;
+	
+	//
+	//
+	//
+	GCLK->PCHCTRL[EIC_GCLK_ID].bit.GEN = 0;
+	GCLK->PCHCTRL[EIC_GCLK_ID].bit.CHEN = 1;
+
+	GCLK->PCHCTRL[EVSYS_GCLK_ID_0].bit.GEN = 0;
+	GCLK->PCHCTRL[EVSYS_GCLK_ID_0].bit.CHEN = 1;
+
+	GCLK->PCHCTRL[TCC0_GCLK_ID].bit.GEN = 0;
+	GCLK->PCHCTRL[TCC0_GCLK_ID].bit.CHEN = 1;
+	GCLK->PCHCTRL[TCC1_GCLK_ID].bit.GEN = 0;
+	GCLK->PCHCTRL[TCC1_GCLK_ID].bit.CHEN = 1;
+	GCLK->PCHCTRL[TCC2_GCLK_ID].bit.GEN = 0;
+	GCLK->PCHCTRL[TCC2_GCLK_ID].bit.CHEN = 1;
+
+	GCLK->PCHCTRL[TC1_GCLK_ID].bit.GEN = 2; //GCLK 1 (72kHz)
+	GCLK->PCHCTRL[TC1_GCLK_ID].bit.CHEN = 1;
+
+	GCLK->PCHCTRL[TC2_GCLK_ID].bit.GEN = 0;
+	GCLK->PCHCTRL[TC2_GCLK_ID].bit.CHEN = 1;
+
+	GCLK->PCHCTRL[TC3_GCLK_ID].bit.GEN = 0;
+	GCLK->PCHCTRL[TC3_GCLK_ID].bit.CHEN = 1;
+
+	GCLK->PCHCTRL[TC4_GCLK_ID].bit.GEN = 0;
+	GCLK->PCHCTRL[TC4_GCLK_ID].bit.CHEN = 1;
+
+	//I2C
+	GCLK->PCHCTRL[SERCOM2_GCLK_ID_CORE].bit.GEN = 0; //v5
+	GCLK->PCHCTRL[SERCOM2_GCLK_ID_CORE].bit.CHEN = 1;
+	GCLK->PCHCTRL[SERCOM5_GCLK_ID_CORE].bit.GEN = 0; //v33
+	GCLK->PCHCTRL[SERCOM5_GCLK_ID_CORE].bit.CHEN = 1;
+
+	//UART
+	GCLK->PCHCTRL[SERCOM1_GCLK_ID_CORE].bit.GEN = 0;
+	GCLK->PCHCTRL[SERCOM1_GCLK_ID_CORE].bit.CHEN = 1;
+
+	//GCLK->PCHCTRL[NVMCTRL_GCLK_ID].bit.GEN = 0;
+	//GCLK->PCHCTRL[NVMCTRL_GCLK_ID].bit.CHEN = 1;
+
+	GCLK->PCHCTRL[ADC0_GCLK_ID].bit.GEN = 0;
+	GCLK->PCHCTRL[ADC0_GCLK_ID].bit.CHEN = 1;
+
+	//
+	MCLK->CPUDIV.bit.CPUDIV = 1;
+
+	//
+	MCLK->AHBMASK.bit.DMAC_ = 1;
+	MCLK->AHBMASK.bit.HMATRIXHS_ = 1;
+	MCLK->AHBMASK.bit.NVMCTRL_   = 1;
+
+	//
+	MCLK->APBAMASK.bit.EIC_ = 1;
+	MCLK->APBAMASK.bit.TSENS_ = 1;
+	//MCLK->APBAMASK.bit.WDT_ = 1;
+	
+	MCLK->APBBMASK.bit.HMATRIXHS_ = 1;
+	MCLK->APBBMASK.bit.PORT_ = 1;
+	MCLK->APBBMASK.bit.NVMCTRL_ = 1;
+
+	//
+	MCLK->APBCMASK.bit.ADC0_ = 1;
+	MCLK->APBCMASK.bit.DAC_ = 1;
+	MCLK->APBCMASK.bit.EVSYS_ = 1;
+	MCLK->APBCMASK.bit.SERCOM5_ = 1;
+	MCLK->APBCMASK.bit.SERCOM2_ = 1;
+	MCLK->APBCMASK.bit.TCC0_ = 1;
+	MCLK->APBCMASK.bit.TCC1_ = 1;
+	MCLK->APBCMASK.bit.TCC2_ = 1;
+	MCLK->APBCMASK.bit.TC1_ = 1;
+	MCLK->APBCMASK.bit.TC2_ = 1;
+	MCLK->APBCMASK.bit.TC3_ = 1;
+	MCLK->APBCMASK.bit.TC4_ = 1;
+}
+
+void initGpio () {
+	//LED
+	PORT->Group[0].DIRSET.reg = (1 << 10) | (1 << 11);
+	PORT->Group[0].OUTSET.reg = (1 << 10) | (1 << 11);
+
+	//FLASHER
+	PORT->Group[1].OUTCLR.reg = (1 << 22);
+	PORT->Group[1].DIRSET.reg = (1 << 22);
+
+	//BACKWARD CONTROL
+	PORT->Group[1].OUTCLR.reg = (1 << 3);
+	PORT->Group[1].DIRSET.reg = (1 << 3);
+
+	//BARREL POS, GUN POS
+	PORT->Group[0].OUTCLR.reg = 1;
+	PORT->Group[0].DIRSET.reg = 1;
+	PORT->Group[0].PMUX[0].bit.PMUXO = 0x00; //發射過觸發位置用中斷觸發
+	PORT->Group[0].PINCFG[1].bit.PMUXEN = 1;
+
+	//NMI
+	//G-Sensor COLLISION DETECT
+	PORT->Group[0].PMUX[4].bit.PMUXE = 0x00;
+	PORT->Group[0].PINCFG[8].bit.PMUXEN = 1;
+
+	//RF TRG
+	PORT->Group[0].PMUX[4].bit.PMUXO = 0x00;
+	PORT->Group[0].PINCFG[9].bit.PMUXEN = 1;
+
+	//RF CH1-CH4
+	PORT->Group[0].PMUX[2].bit.PMUXE = 0x0;
+	PORT->Group[0].PMUX[2].bit.PMUXO = 0x0;
+	PORT->Group[0].PMUX[3].bit.PMUXE = 0x0;
+	PORT->Group[0].PMUX[3].bit.PMUXO = 0x0;
+	PORT->Group[0].PINCFG[4].bit.PMUXEN = 1;
+	PORT->Group[0].PINCFG[5].bit.PMUXEN = 1;
+	PORT->Group[0].PINCFG[6].bit.PMUXEN = 1;
+	PORT->Group[0].PINCFG[7].bit.PMUXEN = 1;
+	PORT->Group[0].PINCFG[4].bit.PULLEN = 1;
+	PORT->Group[0].PINCFG[5].bit.PULLEN = 1;
+	PORT->Group[0].PINCFG[6].bit.PULLEN = 1;
+	PORT->Group[0].PINCFG[7].bit.PULLEN = 1;
+
+	//RF CH5-CH8
+	PORT->Group[1].PMUX[5].bit.PMUXE = 0x0;
+	PORT->Group[1].PMUX[5].bit.PMUXO = 0x0;
+	PORT->Group[1].PMUX[6].bit.PMUXE = 0x0;
+	PORT->Group[1].PMUX[6].bit.PMUXO = 0x0;
+	PORT->Group[1].PINCFG[10].bit.PMUXEN = 1;
+	PORT->Group[1].PINCFG[11].bit.PMUXEN = 1;
+	PORT->Group[1].PINCFG[12].bit.PMUXEN = 1;
+	PORT->Group[1].PINCFG[13].bit.PMUXEN = 1;
+	PORT->Group[1].PINCFG[10].bit.PULLEN = 1;
+	PORT->Group[1].PINCFG[11].bit.PULLEN = 1;
+	PORT->Group[1].PINCFG[12].bit.PULLEN = 1;
+	PORT->Group[1].PINCFG[13].bit.PULLEN = 1;
+
+	//TC1 GN-SERVO, LED-DIM
+	PORT->Group[1].PMUX[7].bit.PMUXE = 0x04;
+	PORT->Group[1].PMUX[7].bit.PMUXO = 0x04;
+	PORT->Group[1].PINCFG[14].bit.PMUXEN = 1;
+	PORT->Group[1].PINCFG[15].bit.PMUXEN = 1;
+
+	//TC2 M2 PWM
+	PORT->Group[1].PMUX[8].bit.PMUXE = 0x04;
+	PORT->Group[1].PMUX[8].bit.PMUXO = 0x04;
+	PORT->Group[1].PINCFG[16].bit.PMUXEN = 1;
+	PORT->Group[1].PINCFG[17].bit.PMUXEN = 1;
+
+	//TC3 M1 PWM
+	PORT->Group[0].PMUX[10].bit.PMUXE = 0x04;
+	PORT->Group[0].PMUX[10].bit.PMUXO = 0x04;
+	PORT->Group[0].PINCFG[20].bit.PMUXEN = 1;
+	PORT->Group[0].PINCFG[21].bit.PMUXEN = 1;
+	PORT->Group[0].PINCFG[20].bit.DRVSTR = 1;
+	PORT->Group[0].PINCFG[21].bit.DRVSTR = 1;
+
+	//TC4 GN TURN PWM
+	PORT->Group[0].PMUX[9].bit.PMUXE = 0x04;
+	PORT->Group[0].PMUX[9].bit.PMUXO = 0x04;
+	PORT->Group[0].PINCFG[18].bit.PMUXEN = 1;
+	PORT->Group[0].PINCFG[19].bit.PMUXEN = 1;
+
+	//V33 I2C
+	PORT->Group[1].PMUX[15].bit.PMUXE = 0x03;
+	PORT->Group[1].PMUX[15].bit.PMUXO = 0x03;
+	PORT->Group[1].PINCFG[30].bit.PMUXEN = 1;
+	PORT->Group[1].PINCFG[31].bit.PMUXEN = 1;
+
+	//BATTERY VOLT MEASURE
+	PORT->Group[1].PMUX[4].bit.PMUXE = 0x02;
+	PORT->Group[1].PINCFG[8].bit.PMUXEN = 1;
+
+	//MOTOR 1 AMPS MEASURE
+	PORT->Group[0].PMUX[1].bit.PMUXO = 0x02;
+	PORT->Group[0].PINCFG[3].bit.PMUXEN = 1;
+}
+
+void initEic (void ) {
+	EIC->EIC_ASYNCH.reg = 0xFFFF;
+
+	//External interrupt
+	//CONFIG[n].SENSEm ->EXINTx
+	//x = n*8 + m
+	//0x00 => off, 0x01 => rising, 0x02 => falling
+	EIC->CONFIG[0].bit.SENSE1 = 0x01; //GN_POS
+
+	EIC->CONFIG[0].bit.SENSE4 = 0x02; //RF_CH1
+	EIC->CONFIG[0].bit.SENSE5 = 0x02; //RF_CH2
+	EIC->CONFIG[0].bit.SENSE6 = 0x02; //RF_CH3
+	EIC->CONFIG[0].bit.SENSE7 = 0x02; //RF_CH4
+
+	EIC->CONFIG[1].bit.SENSE2 = 0x02; //RF_CH5
+	EIC->CONFIG[1].bit.SENSE3 = 0x02; //RF_CH6
+	EIC->CONFIG[1].bit.SENSE4 = 0x02; //RF_CH7
+	EIC->CONFIG[1].bit.SENSE5 = 0x02; //RF_CH8
+
+	EIC->CONFIG[1].bit.SENSE1 = 0x01; //TRG EINT9
+
+	//NMI G Sensor collision detect
+	//EIC->NMICTRL.bit.NMIASYNCH = 1;
+	//EIC->NMICTRL.bit.NMIFILTEN = 1;
+	//EIC->NMICTRL.bit.NMISENSE = 0x2; //FALLING-EDGE
+
+	EIC->INTENSET.bit.EXTINT = (1 << 1); //GN_POS
+	EIC->EVCTRL.bit.EXTINTEO = 0x3EF0;
+	EIC->CTRLA.bit.ENABLE = 1;
+}
+
+void initEvsys (void ) {
+	//TCC reset event
+	EVSYS->CHANNEL[0].bit.EVGEN = EVSYS_ID_GEN_EIC_EXTINT_9;
+	EVSYS->CHANNEL[0].bit.EDGSEL = 0x01; //Rising-edge
+	EVSYS->CHANNEL[0].bit.PATH = 2; //ASYNCH
+
+	//
+	//TCC0
+	//
+	//MC0 capture
+	EVSYS->CHANNEL[1].bit.EVGEN = EVSYS_ID_GEN_EIC_EXTINT_4;
+	EVSYS->CHANNEL[1].bit.EDGSEL = 0x01; //Rising-edge
+	EVSYS->CHANNEL[1].bit.PATH = 2;
+
+	//MC1 capture
+	EVSYS->CHANNEL[2].bit.EVGEN = EVSYS_ID_GEN_EIC_EXTINT_5;
+	EVSYS->CHANNEL[2].bit.EDGSEL = 0x01; //Rising-edge
+	EVSYS->CHANNEL[2].bit.PATH = 2;
+
+	//MC2 capture
+	EVSYS->CHANNEL[3].bit.EVGEN = EVSYS_ID_GEN_EIC_EXTINT_6;
+	EVSYS->CHANNEL[3].bit.EDGSEL = 0x01; //Rising-edge
+	EVSYS->CHANNEL[3].bit.PATH = 2;
+
+	//MC3 capture
+	EVSYS->CHANNEL[4].bit.EVGEN = EVSYS_ID_GEN_EIC_EXTINT_7;
+	EVSYS->CHANNEL[4].bit.EDGSEL = 0x01; //Rising-edge
+	EVSYS->CHANNEL[4].bit.PATH = 2;
+
+	//
+	//TCC1
+	//
+	EVSYS->CHANNEL[5].bit.EVGEN = EVSYS_ID_GEN_EIC_EXTINT_10;
+	EVSYS->CHANNEL[5].bit.EDGSEL = 0x01; //Rising-edge
+	EVSYS->CHANNEL[5].bit.PATH = 2;
+
+	//MC1 capture
+	EVSYS->CHANNEL[6].bit.EVGEN = EVSYS_ID_GEN_EIC_EXTINT_11;
+	EVSYS->CHANNEL[6].bit.EDGSEL = 0x01; //Rising-edge
+	EVSYS->CHANNEL[6].bit.PATH = 2;
+
+	//MC2 capture
+	EVSYS->CHANNEL[7].bit.EVGEN = EVSYS_ID_GEN_EIC_EXTINT_12;
+	EVSYS->CHANNEL[7].bit.EDGSEL = 0x01; //Rising-edge
+	EVSYS->CHANNEL[7].bit.PATH = 2;
+
+	//MC3 capture
+	EVSYS->CHANNEL[8].bit.EVGEN = EVSYS_ID_GEN_EIC_EXTINT_13;
+	EVSYS->CHANNEL[8].bit.EDGSEL = 0x01; //Rising-edge
+	EVSYS->CHANNEL[8].bit.PATH = 2;
+
+	//USERS
+	EVSYS->USER[EVSYS_ID_USER_TCC0_EV_0].bit.CHANNEL = 1; // = CHANNEL 0
+	EVSYS->USER[EVSYS_ID_USER_TCC0_MC_0].bit.CHANNEL = 2; // = CHANNEL 1
+	EVSYS->USER[EVSYS_ID_USER_TCC0_MC_1].bit.CHANNEL = 3; // = CHANNEL 2
+	EVSYS->USER[EVSYS_ID_USER_TCC0_MC_2].bit.CHANNEL = 4; // = CHANNEL 3
+	EVSYS->USER[EVSYS_ID_USER_TCC0_MC_3].bit.CHANNEL = 5; // = CHANNEL 4
+
+	EVSYS->USER[EVSYS_ID_USER_TCC1_EV_0].bit.CHANNEL = 1; // = CHANNEL 0
+	EVSYS->USER[EVSYS_ID_USER_TCC1_MC_0].bit.CHANNEL = 6; // = CHANNEL 5
+	EVSYS->USER[EVSYS_ID_USER_TCC1_MC_1].bit.CHANNEL = 7; // = CHANNEL 6
+
+	EVSYS->USER[EVSYS_ID_USER_TCC2_EV_0].bit.CHANNEL = 1; // = CHANNEL 0
+	EVSYS->USER[EVSYS_ID_USER_TCC2_MC_0].bit.CHANNEL = 8; // = CHANNEL 7
+	EVSYS->USER[EVSYS_ID_USER_TCC2_MC_1].bit.CHANNEL = 9; // = CHANNEL 8
+
+}
+
+void initTick () {
+	SysTick_Config (7999); //8MHz cpu -> 1KHz
+}

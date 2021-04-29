@@ -237,7 +237,7 @@
                 </option>
                 <option>
                     <name>CCListCFile</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCListCMnemonics</name>
@@ -245,7 +245,7 @@
                 </option>
                 <option>
                     <name>CCListCMessages</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCListAssFile</name>
@@ -314,7 +314,7 @@
                 </option>
                 <option>
                     <name>CCRequirePrototypes</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCDiagWarnAreErr</name>
@@ -450,11 +450,11 @@
                 </option>
                 <option>
                     <name>CCEncSource</name>
-                    <state>0</state>
+                    <state>2</state>
                 </option>
                 <option>
                     <name>CCEncOutput</name>
-                    <state>0</state>
+                    <state>2</state>
                 </option>
                 <option>
                     <name>CCEncOutputBom</name>
@@ -462,7 +462,7 @@
                 </option>
                 <option>
                     <name>CCEncInput</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IccExceptions2</name>
@@ -1201,6 +1201,12 @@
             <name>$PROJ_DIR$\src\headers\Gsensor.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\src\headers\I2cMaster.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\src\headers\Initialize.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\src\headers\Motor.h</name>
         </file>
         <file>
@@ -1217,7 +1223,25 @@
             <file>
                 <name>$PROJ_DIR$\src\Initialize.c</name>
             </file>
+            <file>
+                <name>$PROJ_DIR$\src\InitializePpmMeasure.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\src\InitializeTimers.c</name>
+            </file>
         </group>
+        <file>
+            <name>$PROJ_DIR$\src\I2cMaster.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\src\Isr.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\src\IsrPpmMeasure.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\src\IsrPwmGen.c</name>
+        </file>
         <file>
             <name>$PROJ_DIR$\src\Main.c</name>
         </file>
