@@ -1,10 +1,16 @@
 #include <samc21.h>
+#include <Motor.h>
 
 void tick (void );
 
 typedef struct _system {
 	uint32_t millis;
 	uint32_t delay; //hard delay
+	
+	//
+	Motor main; //engine
+	Motor steering;
+	Motor head;
 	
 } System;
 extern System sys;
