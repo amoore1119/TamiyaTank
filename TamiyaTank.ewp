@@ -1198,6 +1198,9 @@
     <group>
         <name>header</name>
         <file>
+            <name>$PROJ_DIR$\src\headers\Gpio.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\src\headers\Gsensor.h</name>
         </file>
         <file>
@@ -1208,6 +1211,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\src\headers\Motor.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\src\headers\Receiver.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\src\headers\Servo.h</name>
@@ -1230,6 +1236,9 @@
                 <name>$PROJ_DIR$\src\InitializeTimers.c</name>
             </file>
         </group>
+        <file>
+            <name>$PROJ_DIR$\src\Gpio.c</name>
+        </file>
         <file>
             <name>$PROJ_DIR$\src\I2cMaster.c</name>
         </file>

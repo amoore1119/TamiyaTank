@@ -1,4 +1,7 @@
 #include <samc21.h>
+#include <stdio.h>
+#include <Gpio.h>
+#include <Receiver.h>
 #include <Motor.h>
 
 void tick (void );
@@ -7,8 +10,11 @@ typedef struct _system {
 	uint32_t millis;
 	uint32_t delay; //hard delay
 	
+	//receiver
+	RadioReceiver radio;
+	
 	//
-	Motor main; //engine
+	Motor throttle; //engine
 	Motor steering;
 	Motor head;
 	

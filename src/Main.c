@@ -5,16 +5,17 @@
 System sys;
 Routine routine;
 
+uint8_t flip = 0;
+
 void main () {
-	
-	initClock ();
 	initGpio ();
+	initClock ();
 	initEic ();
 	initEvsys ();
-	initPwm72Hz (TC1);
-	initPwm (TC2);
-	initPwm (TC3);
-	initPwm (TC4);
+	//initPwm72Hz (TC1);
+	//initPwm (TC2);
+	//initPwm (TC3);
+	//initPwm (TC4);
 	initPpmMeasure ();
 	
 	initI2cMaster (SERCOM5);
@@ -42,6 +43,12 @@ void main () {
 		}
 		
 		if (routine.task10Hz) {
+			if (flip) {
+				gpioLedIndicatorOn ();
+			} else {
+				gpioLedIndicatorOff ();
+			}
+			flip ^= 1;
 			
 			routine.task10Hz = 0;
 		}

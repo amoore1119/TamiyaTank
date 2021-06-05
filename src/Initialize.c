@@ -3,18 +3,20 @@
 
 void initClock () {
 	//enable external crystal
-	OSCCTRL->XOSCCTRL.bit.XTALEN = 1; // enable XIN/XOUT pin
+	//OSCCTRL->XOSCCTRL.bit.STARTUP = 5;
 	OSCCTRL->XOSCCTRL.bit.GAIN = 2; // for 8MHz
 	OSCCTRL->XOSCCTRL.bit.AMPGC = 1;
+	OSCCTRL->XOSCCTRL.bit.XTALEN = 1; // enable XIN/XOUT pin
 	OSCCTRL->XOSCCTRL.bit.ENABLE = 1;
-	while (!OSCCTRL->STATUS.bit.XOSCRDY);
-
-	//OSCCTRL->XOSCCTRL.bit.CFDEN = 1; // clock failure detector
-	//OSCCTRL->CFDPRESC.bit.CFDPRESC = 1;
-
+	
+	//OSCCTRL->XOSCCTRL.bit.CFDEN = 1;
+	//OSCCTRL->XOSCCTRL.bit.SWBEN = 1;
+	
 	//system clock source
 	GCLK->GENCTRL[0].bit.SRC = 0; //XOSC
 	GCLK->GENCTRL[0].bit.IDC = 1;
+	
+	while (!OSCCTRL->STATUS.bit.XOSCRDY);
 
 	//enable GCLK 2 for TC1
 	GCLK->GENCTRL[2].bit.GENEN = 1;
