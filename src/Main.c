@@ -62,7 +62,7 @@ void main () {
 		}
 		
 		if (routine.task60Hz) {
-			
+			receiverParser ();
 			routine.task60Hz = 0;
 		}
 		

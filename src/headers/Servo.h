@@ -1,5 +1,5 @@
 //
-//FT-S3003
+//TP-S3003
 //Neutro:1520uS
 //+-45 degree => +-400us
 //@resolution 10us => 1.125 degree

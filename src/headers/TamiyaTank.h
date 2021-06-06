@@ -11,16 +11,20 @@ typedef struct _system {
 	uint32_t millis;
 	uint32_t delay; //hard delay
 	
+	uint8_t mode;
+	uint8_t error;
+	
 	//receiver
 	RadioReceiver radio;
 	
 	//
-	Motor throttle; //engine
+	Motor throttle;
 	Motor steering;
-	Motor head;
+	
 	
 	//
 	Servo barrelVerital;
+	Motor head; //barrel horizon
 	
 } System;
 extern System sys;
