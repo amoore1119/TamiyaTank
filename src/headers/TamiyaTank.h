@@ -3,6 +3,7 @@
 #include <Gpio.h>
 #include <Receiver.h>
 #include <Motor.h>
+#include <Servo.h>
 
 void tick (void );
 
@@ -17,6 +18,9 @@ typedef struct _system {
 	Motor throttle; //engine
 	Motor steering;
 	Motor head;
+	
+	//
+	Servo barrelVerital;
 	
 } System;
 extern System sys;

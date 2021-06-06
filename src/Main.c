@@ -12,7 +12,7 @@ void main () {
 	initClock ();
 	initEic ();
 	initEvsys ();
-	//initPwm72Hz (TC1);
+	initPwm72Hz (TC1);
 	//initPwm (TC2);
 	//initPwm (TC3);
 	//initPwm (TC4);
@@ -43,12 +43,15 @@ void main () {
 		}
 		
 		if (routine.task10Hz) {
+			
+			//test blinking
 			if (flip) {
 				gpioLedIndicatorOn ();
 			} else {
 				gpioLedIndicatorOff ();
 			}
 			flip ^= 1;
+			//
 			
 			routine.task10Hz = 0;
 		}
