@@ -3,7 +3,7 @@
 //PPM Ch1-Ch4
 void TCC0_Handler (void ) {
 	if (TCC0->INTFLAG.bit.TRG) {
-		//
+		sys.radio.isRunning = 1;
 		TCC0->INTFLAG.reg = 0x02; //clear trg
 	}
 	
@@ -29,6 +29,7 @@ void TCC0_Handler (void ) {
 
 	if (TCC0->INTFLAG.bit.OVF) {
 		//接收器意外掉電處理方式
+		sys.radio.isRunning = 0;
 		TCC0->INTFLAG.reg = 1; //OVF
 	}
 }

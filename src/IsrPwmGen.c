@@ -30,8 +30,18 @@ void TC3_Handler (void ) {
 	TC3->COUNT16.COUNT.reg = 1000;
 
 	//One of CC[0, 1] must be 0, or causes MOSFET hi/lo side short
-	TC3->COUNT16.CC[0].reg = 0; //CW
-	TC3->COUNT16.CC[1].reg = 0; //CCW
+	if (sys.throttle.deadTime) {
+		TC3->COUNT16.CC[0].reg = 0; //CW
+		TC3->COUNT16.CC[1].reg = 0; //CCW
+	} else {
+		if (sys.throttle.isCw) {
+			TC3->COUNT16.CC[0].reg = sys.throttle.output.present;
+			TC3->COUNT16.CC[1].reg = 0;
+		} else {
+			TC3->COUNT16.CC[0].reg = 0;
+			TC3->COUNT16.CC[1].reg = sys.throttle.output.present;
+		}
+	}
 	
 	TC3->COUNT16.INTFLAG.reg = 1;
 }

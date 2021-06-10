@@ -24,6 +24,9 @@ void initPwm (Tc *tc) {
 	tc->COUNT16.CTRLA.bit.MODE = 0; //16bit mode
 	//tc->COUNT16.CTRLA.bit.PRESCALER = 0x00; //div1 = 8Khz
 	tc->COUNT16.CTRLA.bit.PRESCALER = 0x06; //div256 = 31.25Hz
+	//tc->COUNT16.CTRLA.bit.PRESCALER = 0x05; //div128 = 62.5Hz
+	//tc->COUNT16.CTRLA.bit.PRESCALER = 0x04; //div64 = 125Hz
+	//tc->COUNT16.CTRLA.bit.PRESCALER = 0x03; //div32 = 250Hz 
 
 	tc->COUNT16.CTRLBSET.bit.DIR = 1;
 

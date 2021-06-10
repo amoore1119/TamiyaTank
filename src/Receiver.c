@@ -7,13 +7,22 @@ void receiverParser () {
 	
 	//GEAR
 	if (sys.radio.value[4] > RECEIVER_PPM_MAX) {
-		//check cw/ccw, set gap time
+		if (!sys.throttle.isCw) {
+			sys.throttle.deadTime = sys.throttle.para.gap;
+			sys.throttle.isCw = 1;
+		}
 		
 		gpioRelayForward ();
 		gpioLedIndicatorOff ();
 		
 	} else if (sys.radio.value[4] < RECEIVER_PPM_MIN) {
-		//backward
+		if (sys.throttle.isCw) {
+			sys.throttle.deadTime = sys.throttle.para.gap;
+			sys.throttle.isCw = 0;
+		}
+		
+		gpioRelayBackward ();
+		gpioLedIndicatorOn ();
 	} else {
 		//power lock
 	}
@@ -25,10 +34,10 @@ void receiverParser () {
 	//throttle
 	if (sys.radio.value[2] > RECEIVER_PPM_MAX) {
 		sys.throttle.output.target = sys.throttle.para.max;
-	} else if (sys.radio.value[2] < RECEIVER_PPM_MIN) {
+	} else if (sys.radio.value[2] < (RECEIVER_PPM_MIN + 50)) {
 		sys.throttle.output.target = 0;
 	} else {
-		sys.throttle.output.target = (RECEIVER_PPM_MIN - sys.radio.value[2]) * sys.throttle.para.stickRes;
+		sys.throttle.output.target = sys.throttle.para.min + (uint16_t) ((sys.radio.value[2] - RECEIVER_PPM_MIN) * sys.throttle.para.stickRes);
 	}
 	
 	sys.radio.value[3];

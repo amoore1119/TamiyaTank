@@ -2,6 +2,7 @@
 //
 //
 typedef struct _motor_dc_parameters {
+	uint16_t gap; //gaptime
 	uint16_t min; //pwm starts
 	uint16_t max; //pwm limits
 	
@@ -16,8 +17,12 @@ typedef struct _motor_dc_output {
 typedef struct _motor_dc {
 	MotorParameters para;
 	MotorOutput output;
+	uint8_t isCw;
+	uint16_t deadTime;
 	
 	//hardware not support (yet)
 	//uint32_t rpm;
 	//uint32_t amps;
 } Motor;
+
+void ctrlMotor (void );

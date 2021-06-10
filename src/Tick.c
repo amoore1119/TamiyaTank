@@ -12,6 +12,10 @@ void tick () {
 	if (sys.delay) {
 		sys.delay--;
 	}
+	
+	if (sys.throttle.deadTime) {
+		sys.throttle.deadTime--;
+	}
 
 	if (div1Hz < 1000) {
 		div1Hz++;

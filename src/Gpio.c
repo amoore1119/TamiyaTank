@@ -17,9 +17,9 @@ void gpioLedErrorOff () {
 }
 
 void gpioRelayForward () {
-	PORT->Group[1].OUTSET.reg = (1 << 3);
+	PORT->Group[1].OUTCLR.reg = (1 << 3);
 }
 
 void gpioRelayBackward () {
-	PORT->Group[1].OUTCLR.reg = (1 << 3);
+	PORT->Group[1].OUTSET.reg = (1 << 3);
 }

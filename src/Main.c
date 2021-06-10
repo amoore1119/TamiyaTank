@@ -5,8 +5,6 @@
 System sys;
 Routine routine;
 
-uint8_t flip = 0;
-
 void main () {
 	initGpio ();
 	initClock ();
@@ -14,11 +12,22 @@ void main () {
 	initEvsys ();
 	initPwm72Hz (TC1);
 	//initPwm (TC2);
-	//initPwm (TC3);
+	initPwm (TC3);
 	//initPwm (TC4);
 	initPpmMeasure ();
 	
 	initI2cMaster (SERCOM5);
+	
+	//initialize motor parameters
+	sys.throttle.para.gap = 400; //ms
+	sys.throttle.para.max = 980; //0.1% pwm
+	sys.throttle.para.min = 320;
+	sys.throttle.para.stickRes = (float) (sys.throttle.para.max - sys.throttle.para.min) / 800; //800->stick range
+	
+	sys.steering.para.gap = 150;
+	sys.steering.para.max = 980;
+	sys.steering.para.min = 300;
+	sys.steering.para.stickRes = (float) (sys.steering.para.max - sys.steering.para.min) / 400;
 	
 	initTick ();
 	
@@ -44,15 +53,6 @@ void main () {
 		
 		if (routine.task10Hz) {
 			
-			//test blinking
-			if (flip) {
-				gpioLedIndicatorOn ();
-			} else {
-				gpioLedIndicatorOff ();
-			}
-			flip ^= 1;
-			//
-			
 			routine.task10Hz = 0;
 		}
 		
@@ -62,11 +62,15 @@ void main () {
 		}
 		
 		if (routine.task60Hz) {
+			
 			receiverParser ();
+			
 			routine.task60Hz = 0;
 		}
 		
 		if (routine.task30Hz) {
+			
+			ctrlMotor ();
 			
 			routine.task30Hz = 0;
 		}
