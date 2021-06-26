@@ -3,13 +3,14 @@
 //barrel, led dimmers
 //72Hz PWM
 void TC1_Handler (void ) {
-	TC1->COUNT16.COUNT.reg = 10000;
+	//TC1->COUNT16.COUNT.reg = 10000;
 
 	//BARREL SERVO 1.52MS NEUTRO
-	TC1->COUNT16.CC[0].reg = 1520;
+	//TC1->COUNT16.CC[0].reg = sys.barrelVerital.target;
+	//TC1->COUNT16.CC[0].reg = 1520; //test 50%
 	
 	//LED DIMMER 50%
-	TC1->COUNT16.CC[1].reg = 5000;
+	//TC1->COUNT16.CC[1].reg = 5000;
 
 	TC1->COUNT16.INTFLAG.reg = 1;
 }
@@ -30,6 +31,7 @@ void TC3_Handler (void ) {
 	TC3->COUNT16.COUNT.reg = 1000;
 
 	//One of CC[0, 1] must be 0, or causes MOSFET hi/lo side short
+	/*
 	if (sys.throttle.deadTime) {
 		TC3->COUNT16.CC[0].reg = 0; //CW
 		TC3->COUNT16.CC[1].reg = 0; //CCW
@@ -41,7 +43,11 @@ void TC3_Handler (void ) {
 			TC3->COUNT16.CC[0].reg = 0;
 			TC3->COUNT16.CC[1].reg = sys.throttle.output.present;
 		}
-	}
+	}*/
+	
+	//for debug no power output
+	TC3->COUNT16.CC[0].reg = 0; //CW
+	TC3->COUNT16.CC[1].reg = 0; //CCW
 	
 	TC3->COUNT16.INTFLAG.reg = 1;
 }

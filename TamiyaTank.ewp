@@ -1261,6 +1261,9 @@
             <name>$PROJ_DIR$\src\Receiver.c</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\src\Servo.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\src\SystemHandler.c</name>
         </file>
         <file>

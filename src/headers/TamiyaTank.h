@@ -11,6 +11,8 @@ typedef struct _system {
 	uint32_t millis;
 	uint32_t delay; //hard delay
 	
+	Gclk *obs;
+	
 	uint8_t mode;
 	uint8_t error;
 	

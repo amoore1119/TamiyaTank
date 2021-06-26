@@ -1,7 +1,7 @@
 #include <samc21.h>
 #include <Initialize.h>
 
-void initClock () {
+void initClock () {	
 	//enable external crystal
 	//OSCCTRL->XOSCCTRL.bit.STARTUP = 5;
 	OSCCTRL->XOSCCTRL.bit.GAIN = 2; // for 8MHz
@@ -12,19 +12,32 @@ void initClock () {
 	//OSCCTRL->XOSCCTRL.bit.CFDEN = 1;
 	//OSCCTRL->XOSCCTRL.bit.SWBEN = 1;
 	
+	while (GCLK->SYNCBUSY.bit.SWRST);
+	
 	//system clock source
 	GCLK->GENCTRL[0].bit.SRC = 0; //XOSC
 	GCLK->GENCTRL[0].bit.IDC = 1;
-	
 	while (!OSCCTRL->STATUS.bit.XOSCRDY);
 
-	//enable GCLK 2 for TC1
-	GCLK->GENCTRL[2].bit.GENEN = 1;
-	GCLK->GENCTRL[2].bit.SRC = 0x0; //XOSC = 8MHZ
-	while (GCLK->SYNCBUSY.bit.GENCTRL & 0x02);
+	//enable GCLK n for TC1
+	GCLK_GENCTRL_Type gclk1 = {
+		.bit.DIV = 8,
+		.bit.DIVSEL = 0,
+		.bit.SRC = 0,
+		.bit.IDC = 1,
+		.bit.GENEN = 1,
+	};
 	
-	GCLK->GENCTRL[2].bit.DIV = 10; // GCLK1 = 8MHZ / 110 = 720kHz
-	GCLK->GENCTRL[2].bit.DIVSEL = 0;
+	GCLK->GENCTRL[1].reg = gclk1.reg;
+	while (GCLK->SYNCBUSY.bit.GENCTRL);
+	
+	//GCLK->GENCTRL[1].bit.GENEN = 1;
+	//while (GCLK->SYNCBUSY.bit.GENCTRL);
+	
+	//GCLK->GENCTRL[1].bit.SRC = 0x0; //XOSC = 8MHZ
+	//GCLK->GENCTRL[1].bit.IDC = 1;
+	//GCLK->GENCTRL[1].bit.DIV = 50; // GCLK1 = 8MHZ / 110 = 720kHz
+	//GCLK->GENCTRL[1].bit.DIVSEL = 0;
 	
 	//
 	//
@@ -42,14 +55,15 @@ void initClock () {
 	GCLK->PCHCTRL[TCC2_GCLK_ID].bit.GEN = 0;
 	GCLK->PCHCTRL[TCC2_GCLK_ID].bit.CHEN = 1;
 
-	GCLK->PCHCTRL[TC1_GCLK_ID].bit.GEN = 2; //GCLK 1 (72kHz)
+	GCLK->PCHCTRL[TC1_GCLK_ID].bit.GEN = 1; //GCLK 1 (72kHz)
 	GCLK->PCHCTRL[TC1_GCLK_ID].bit.CHEN = 1;
 
 	GCLK->PCHCTRL[TC2_GCLK_ID].bit.GEN = 0;
 	GCLK->PCHCTRL[TC2_GCLK_ID].bit.CHEN = 1;
 
-	GCLK->PCHCTRL[TC3_GCLK_ID].bit.GEN = 0;
-	GCLK->PCHCTRL[TC3_GCLK_ID].bit.CHEN = 1;
+	//tc2, 3共用
+	//GCLK->PCHCTRL[TC3_GCLK_ID].bit.GEN = 0;
+	//GCLK->PCHCTRL[TC3_GCLK_ID].bit.CHEN = 1;
 
 	GCLK->PCHCTRL[TC4_GCLK_ID].bit.GEN = 0;
 	GCLK->PCHCTRL[TC4_GCLK_ID].bit.CHEN = 1;

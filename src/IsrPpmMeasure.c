@@ -4,6 +4,13 @@
 void TCC0_Handler (void ) {
 	if (TCC0->INTFLAG.bit.TRG) {
 		sys.radio.isRunning = 1;
+		
+		//enable tc1
+		TC1->COUNT16.COUNT.reg = 10000;
+		TC1->COUNT16.CC[0].reg = sys.barrelVerital.target; //test 50%
+		TC1->COUNT16.CC[1].reg = 5000; //test 50%
+		TC1->COUNT16.CTRLBSET.bit.CMD = 1;
+		
 		TCC0->INTFLAG.reg = 0x02; //clear trg
 	}
 	

@@ -29,6 +29,14 @@ void main () {
 	sys.steering.para.min = 300;
 	sys.steering.para.stickRes = (float) (sys.steering.para.max - sys.steering.para.min) / 400;
 	
+	//initialize servo parameters
+	sys.barrelVerital.para.neutro = 1520;
+	sys.barrelVerital.para.resolution = 10;
+	sys.barrelVerital.para.rps = 400;
+	sys.barrelVerital.para.dpr = (float) (45.0 / 400.0);
+	
+	sys.barrelVerital.target = 1520;
+	
 	initTick ();
 	
 	NVIC_EnableIRQ (EIC_IRQn);
@@ -36,7 +44,7 @@ void main () {
 	NVIC_EnableIRQ (TCC0_IRQn);
 	NVIC_EnableIRQ (TCC1_IRQn);
 	NVIC_EnableIRQ (TCC2_IRQn);
-	NVIC_EnableIRQ (TC1_IRQn);
+	//NVIC_EnableIRQ (TC1_IRQn);
 	NVIC_EnableIRQ (TC2_IRQn);
 	NVIC_EnableIRQ (TC3_IRQn);
 	NVIC_EnableIRQ (TC4_IRQn);
@@ -71,6 +79,7 @@ void main () {
 		if (routine.task30Hz) {
 			
 			ctrlMotor ();
+			ctrlServo ();
 			
 			routine.task30Hz = 0;
 		}
