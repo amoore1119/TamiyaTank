@@ -24,18 +24,18 @@ void main () {
 	sys.throttle.para.min = 320;
 	sys.throttle.para.stickRes = (float) (sys.throttle.para.max - sys.throttle.para.min) / 800; //800->stick range
 	
-	sys.steering.para.gap = 150;
+	sys.steering.para.gap = 200;
 	sys.steering.para.max = 980;
 	sys.steering.para.min = 300;
 	sys.steering.para.stickRes = (float) (sys.steering.para.max - sys.steering.para.min) / 400;
 	
 	//initialize servo parameters
-	sys.barrelVerital.para.neutro = 1520;
-	sys.barrelVerital.para.resolution = 10;
-	sys.barrelVerital.para.rps = 400;
-	sys.barrelVerital.para.dpr = (float) (45.0 / 400.0);
+	sys.turretV.para.neutro = 1520;
+	sys.turretV.para.resolution = 10;
+	sys.turretV.para.rps = 400;
+	sys.turretV.para.dpr = (float) (45.0 / 400.0);
 	
-	sys.barrelVerital.target = 1520;
+	sys.turretV.target = 1520;
 	
 	initTick ();
 	

@@ -27,15 +27,16 @@ void receiverParser () {
 		//power lock
 	}
 	
-	//right hand sticks
+	//turret horizon
 	sys.radio.value[0];
 	
+	//turret vertical
 	if (sys.radio.value[1] > RECEIVER_PPM_MAX) { // stick pull to botton
-		sys.barrelVerital.target = sys.barrelVerital.para.neutro + sys.barrelVerital.para.rps;
+		//sys.turretV.target = sys.turretV.para.neutro + sys.turretV.para.rps;
 	} else if (sys.radio.value[1] < RECEIVER_PPM_MIN) { //stick push to top
-		sys.barrelVerital.target = sys.barrelVerital.para.neutro - sys.barrelVerital.para.rps;
+		//sys.turretV.target = sys.turretV.para.neutro - sys.turretV.para.rps;
 	} else {
-		sys.barrelVerital.target = sys.radio.value[1];
+		//sys.turretV.target = sys.radio.value[1];
 	}
 	
 	//throttle
@@ -61,10 +62,20 @@ void receiverParser () {
 		}
 		//max target output
 	} else {
-		if (sys.radio.value[3] > RECEIVER_PPM_NEUTRO) {
-			//
-		} else if (sys.radio.value[3] < RECEIVER_PPM_NEUTRO) {
-			//
+		if (sys.radio.value[3] > (RECEIVER_PPM_NEUTRO + 5)) { //CW
+			if (!sys.steering.isCw) {
+				sys.steering.deadTime = sys.steering.para.gap;
+				sys.steering.isCw = 1;
+			} else {
+				sys.steering.output.target = sys.steering.para.min + (uint16_t) ((sys.radio.value[3] - RECEIVER_PPM_NEUTRO) * sys.steering.para.stickRes);
+			}
+		} else if (sys.radio.value[3] < (RECEIVER_PPM_NEUTRO - 5)) { //CCW
+			if (sys.steering.isCw) {
+				sys.steering.deadTime = sys.steering.para.gap;
+				sys.steering.isCw = 0;
+			} else {
+				sys.steering.output.target = sys.steering.para.min + (uint16_t) ((RECEIVER_PPM_NEUTRO - sys.radio.value[3]) * sys.steering.para.stickRes);
+			}
 		}
 	}
 	

@@ -1,7 +1,7 @@
 #include <TamiyaTank.h>
 
 void ctrlServo () {
-	Servo *servo = &(sys.barrelVerital);
+	Servo *servo = &(sys.turretV);
 	
 	if (servo->output > servo->para.neutro) {
 		

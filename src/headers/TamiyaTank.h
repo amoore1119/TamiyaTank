@@ -11,8 +11,6 @@ typedef struct _system {
 	uint32_t millis;
 	uint32_t delay; //hard delay
 	
-	Gclk *obs;
-	
 	uint8_t mode;
 	uint8_t error;
 	
@@ -23,10 +21,9 @@ typedef struct _system {
 	Motor throttle;
 	Motor steering;
 	
-	
 	//
-	Servo barrelVerital;
-	Motor head; //barrel horizon
+	Servo turretV;
+	Motor turretH;
 	
 } System;
 extern System sys;

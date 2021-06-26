@@ -20,8 +20,21 @@ void TC2_Handler (void ) {
 	TC2->COUNT16.COUNT.reg = 1000;
 	
 	//One of CC[0, 1] must be 0, or causes MOSFET hi/lo side short
-	TC2->COUNT16.CC[0].reg = 0; //CW
-	TC2->COUNT16.CC[1].reg = 0; //CCW
+	//TC2->COUNT16.CC[0].reg = 0; //CW
+	//TC2->COUNT16.CC[1].reg = 0; //CCW
+	
+	if (sys.steering.deadTime) {
+		TC2->COUNT16.CC[0].reg = 0; //CW
+		TC2->COUNT16.CC[1].reg = 0; //CCW
+	} else {
+		if (sys.steering.isCw) {
+			TC2->COUNT16.CC[0].reg = sys.steering.output.present; //CW
+			TC2->COUNT16.CC[1].reg = 0; //CCW
+		} else {
+			TC2->COUNT16.CC[0].reg = 0; //CW
+			TC2->COUNT16.CC[1].reg = sys.steering.output.present; //CCW
+		}
+	}
 	
 	TC2->COUNT16.INTFLAG.reg = 1;
 }
@@ -52,7 +65,7 @@ void TC3_Handler (void ) {
 	TC3->COUNT16.INTFLAG.reg = 1;
 }
 
-//
+//turret
 void TC4_Handler (void ) {
 	TC4->COUNT16.COUNT.reg = 1000;
 	

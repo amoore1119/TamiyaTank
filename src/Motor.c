@@ -52,7 +52,7 @@ void ctrlMotor () { //30Hz
 		}
 		
 	} else if (sys.steering.output.target < sys.steering.output.present) { //speed down		
-		sys.throttle.output.present = sys.throttle.output.target;
+		sys.steering.output.present = sys.steering.output.target;
 	}
 	
 }
