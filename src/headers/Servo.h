@@ -21,3 +21,5 @@ typedef struct _servo {
 } Servo;
 
 void ctrlServo (void );
+void setServoOutput (Servo *s, uint16_t out);
+void setServoAngle (Servo *s, float deg);

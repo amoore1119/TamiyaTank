@@ -26,3 +26,4 @@ typedef struct _motor_dc {
 } Motor;
 
 void ctrlMotor (void );
+void setMotorOutput (Motor *m, uint16_t target);

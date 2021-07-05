@@ -56,3 +56,34 @@ void ctrlMotor () { //30Hz
 	}
 	
 }
+
+void setMotorOutput (Motor *m, uint16_t target) {
+	uint16_t diff;
+	
+	m->output.target = target;
+	
+	if (m->deadTime) {
+		//do nothing
+	} else if (m->output.target > m->output.present) { //up
+		diff = m->output.target - m->output.present;
+		
+		if (diff > 200) {
+			diff = 160; //16%
+		} else if (diff > 100) {
+			diff = 80; //8%	
+		} else if (diff > 50) {
+			diff = 40; //4%
+		} else {
+			diff = 1;
+		}
+		
+		if ((m->output.present + diff) > m->para.max) {
+			m->output.present = m->para.max;
+		} else {
+			m->output.present += diff;
+		}
+		
+	} else if (m->output.target < m->output.present) { //down
+		m->output.present = m->output.target;
+	}
+}
